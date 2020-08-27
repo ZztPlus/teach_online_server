@@ -63,8 +63,8 @@ public class stu_fileServlet extends HttpServlet {
             int n = smart.save(filePath);
             System.out.println("上传了"+n+"个文件");
 
-            // 第一次创建了git库以后的操作
-            // 比如这是修改的代码
+            // 第一次创建了gitee库以后的操作
+            // 比如这是第三次修改
             // =============
             // 现在准备把这个修改的推到github上
 
