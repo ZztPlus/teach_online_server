@@ -35,11 +35,13 @@ public class teacher_Servlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         // 允许跨域请求
         response.setHeader("Access-Control-Allow-Origin", "*");
-
+// TODO: 2020/8/28 这里负责查询教师个人信息
+        String number = request.getParameter("number");
         Connection connection = SqlConnection.getConnection();
         PrintWriter writer = response.getWriter();
         try {
-            PreparedStatement statement = connection.prepareStatement("select * from tea_login");
+            PreparedStatement statement = connection.prepareStatement("select * from tea_login where tea_login.gonghao=?");
+            statement.setString(1, number);
             ResultSet resultSet = statement.executeQuery();
             List<TeaLogin> teaLoginList = new LinkedList<>();
             while (resultSet.next()) {

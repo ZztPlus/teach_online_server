@@ -30,18 +30,18 @@ public class manageServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
 
         // 这是从前端获取的数据
+        // TODO: 2020/8/27 修改了这里，让教务员创建课程和对应的老师到course里
+        String teacherid = request.getParameter("teacherid");
+        String name = request.getParameter("name");
+        String teachername = request.getParameter("teachername");
 
-        String gonghao = request.getParameter("pgonghao");
-        String coursename = request.getParameter("pcoursename");
-        String teachername = request.getParameter("pteachername");
-
-        System.out.println("gonghao:" + gonghao + "coursename" + coursename +" teachername:" + teachername );
+        System.out.println("id:" + teacherid + "name" + name +" teachername:" + teachername );
 
         Connection connection = SqlConnection.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into tea_course(gonghao ,course_name,teacher_name) values (?,?,?)");
-            preparedStatement.setString(1, gonghao);
-            preparedStatement.setString(2, coursename);
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into course(teacherid ,name,teacher_name) values (?,?,?)");
+            preparedStatement.setString(1, teacherid);
+            preparedStatement.setString(2, name);
             preparedStatement.setString(3, teachername);
             preparedStatement.executeUpdate();  //插入用executeUpdate（）
             writer.print("添加课程成功！");

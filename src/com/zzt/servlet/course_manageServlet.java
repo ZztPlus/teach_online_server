@@ -36,22 +36,23 @@ public class course_manageServlet extends HttpServlet {
 
         // 这是从前端获取的数据
 
-        String pxuehao = request.getParameter("pxuehao");
-        String pcourse_name = request.getParameter("pcourse_name");
-        String pcourse_id = request.getParameter("pcourse_id");
-        String pstudent_name = request.getParameter("pstudent_name");
+        String gonghao = request.getParameter("gonghao");
+        String course_name = request.getParameter("course_name");
+        String teacher_name = request.getParameter("teacher_name");
+        String xuehao = request.getParameter("xuehao");
+        String number = request.getParameter("number");
 
-        System.out.println("xuehao:" + pxuehao + " pcourse_name:" + pcourse_name + "course_id:" + pcourse_id + " pstudent_name:" + pstudent_name);
+        System.out.println("gonghao:" + gonghao + " course_name:" + course_name + "teacher_name:" + teacher_name + " xuehao:" + xuehao);
 
         Connection connection = SqlConnection.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into stu_course(xuehao ,course_name,course_id,student_name) values (?,?,?,?)");
-            preparedStatement.setString(1, pxuehao);
-            preparedStatement.setString(2, pcourse_name);
-            preparedStatement.setString(3, pcourse_id);
-            preparedStatement.setString(4, pstudent_name);
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into tea_course(gonghao ,course_name,teacher_name,xuehao) values (?,?,?,?)");
+            preparedStatement.setString(1, gonghao);
+            preparedStatement.setString(2, course_name);
+            preparedStatement.setString(3, teacher_name);
+            preparedStatement.setString(4, xuehao);
             preparedStatement.executeUpdate();  //插入用executeUpdate（）
-            writer.print("添加学生成功，请及时发布课程通知！");
+            writer.print("操作成功！");
             return;
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,10 +69,13 @@ public class course_manageServlet extends HttpServlet {
         // 允许跨域请求
         response.setHeader("Access-Control-Allow-Origin", "*");
 
+        String number = request.getParameter("number");
+
         Connection connection = SqlConnection.getConnection();
         PrintWriter writer = response.getWriter();
         try {
-            PreparedStatement statement = connection.prepareStatement("select name,id from course");
+            PreparedStatement statement = connection.prepareStatement("select name,id from course where teacherid=?");
+            statement.setString(1, number);
             ResultSet resultSet = statement.executeQuery();
             List<Course> courseList = new LinkedList<>();
             while (resultSet.next()) {

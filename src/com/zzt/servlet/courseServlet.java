@@ -1,6 +1,7 @@
 package com.zzt.servlet;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zzt.entity.Stucourse;
 import com.zzt.entity.TeaLogin;
 import com.zzt.jdbc.SqlConnection;
 import com.zzt.entity.Course;
@@ -23,6 +24,7 @@ import java.util.List;
  * @author 亲爱的子桐
  */
 @WebServlet(name = "courseServlet",urlPatterns = "/course")
+// TODO: 2020/8/27 course post
 public class courseServlet extends HttpServlet {
     @Override
     //老师发布公告用这个
@@ -60,7 +62,7 @@ public class courseServlet extends HttpServlet {
         writer.print("发布失败！");
     }
 
-    // TODO: 2020/8/26 建立前端的课程框，直接用这里的信息
+    // TODO: 2020/8/26 course get
     @Override
     //学生获得公告用这个
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,18 +72,22 @@ public class courseServlet extends HttpServlet {
         // 允许跨域请求
         response.setHeader("Access-Control-Allow-Origin", "*");
 
+        String number = request.getParameter("number");
+
         Connection connection = SqlConnection.getConnection();
         PrintWriter writer = response.getWriter();
+        // TODO: 2020/8/27 这里是从数据库中查数据，循环创建学生课程方块 notice 无
         try {
-            PreparedStatement statement = connection.prepareStatement("select name,notice from course");
+            PreparedStatement statement = connection.prepareStatement("select course_name,notice from stu_course where xuehao=?");
+            statement.setString(1, number);
             ResultSet resultSet = statement.executeQuery();
-            List<Course> courseList = new LinkedList<>();
+            List<Stucourse> courseList = new LinkedList<>();
             while (resultSet.next()) {
-                Course course = new Course();
-                course.setName(resultSet.getString("name"));
-                course.setNotice(resultSet.getString("notice"));
-                courseList.add(course);
-                System.out.println(course.getName() + course.getNotice());
+                Stucourse stucourse = new Stucourse();
+                stucourse.setCourse_name(resultSet.getString("course_name"));
+                stucourse.setNotice(resultSet.getString("notice"));
+                courseList.add(stucourse);
+                System.out.println(stucourse.getCourse_name() + stucourse.getNotice());
             }
             // 把对象转换成json字符串
             writer.print(JSONObject.toJSONString(courseList));

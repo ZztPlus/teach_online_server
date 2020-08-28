@@ -37,18 +37,17 @@ public class LoginServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
 
         // 这是从前端获取的数据
-        String username = request.getParameter("username");
+        String number = request.getParameter("username");
         String psd = request.getParameter("psd");
-        //String password = request.getParameter("password");
         String user = request.getParameter("user");
 
-        System.out.println("username:" + username + " password:" + psd + " user:" + user);
+        System.out.println("number:" + number + " password:" + psd + " user:" + user);
 
         Connection connection = SqlConnection.getConnection();
         if ("学生".equals(user)) {
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement("select * from stu_login where name=?");
-                preparedStatement.setString(1, username);
+                PreparedStatement preparedStatement = connection.prepareStatement("select * from stu_login where xuehao=?");
+                preparedStatement.setString(1, number);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     if (resultSet.getString("password").equals(psd)) {
@@ -61,9 +60,9 @@ public class LoginServlet extends HttpServlet {
             }
 
         } else if ("老师".equals(user)){
-            try {
-                PreparedStatement preparedStatement = connection.prepareStatement("select * from tea_login where name=?");
-                preparedStatement.setString(1, username);
+            try {                      // TODO: 2020/8/28 这里缺少sql语句
+                PreparedStatement preparedStatement = connection.prepareStatement("select * from tea_login where gonghao=?           ");
+                preparedStatement.setString(1, number);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     if (resultSet.getString("pw").equals(psd)) {
@@ -77,8 +76,8 @@ public class LoginServlet extends HttpServlet {
             writer.print("登陆失败！用户名或密码错误");
         } else if ("管理员".equals(user)){
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement("select * from  adminner where username=?");
-                preparedStatement.setString(1, username);
+                PreparedStatement preparedStatement = connection.prepareStatement("select * from  adminner where gonghao=?");
+                preparedStatement.setString(1, number);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     if (resultSet.getString("password").equals(psd)) {
@@ -93,8 +92,8 @@ public class LoginServlet extends HttpServlet {
 
         else if ("教务员".equals(user)){
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement("select * from manager where name=?");
-                preparedStatement.setString(1, username);
+                PreparedStatement preparedStatement = connection.prepareStatement("select * from manager where gonghao=?");
+                preparedStatement.setString(1, number);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     if (resultSet.getString("pw").equals(psd)) {
@@ -108,7 +107,6 @@ public class LoginServlet extends HttpServlet {
             writer.print("登陆失败！用户名或密码错误");
         }
     }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -117,10 +115,13 @@ public class LoginServlet extends HttpServlet {
         // 允许跨域请求
         response.setHeader("Access-Control-Allow-Origin", "*");
 
+        String xuehao = request.getParameter("number");
+
         Connection connection = SqlConnection.getConnection();
         PrintWriter writer = response.getWriter();
         try {
-            PreparedStatement statement = connection.prepareStatement("select * from stu_login");
+            PreparedStatement statement = connection.prepareStatement("select * from stu_login where stu_login.xuehao=?");
+            statement.setString(1, xuehao);
             ResultSet resultSet = statement.executeQuery();
             List<StuLogin> stuLoginList = new LinkedList<>();
             while (resultSet.next()) {

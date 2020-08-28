@@ -42,16 +42,18 @@ public class unit_study_teaServlet extends HttpServlet {
         String knowpoint = request.getParameter("knowpoint");
         String summary = request.getParameter("summary");
         String unitid =  request.getParameter("unitid");
+        String classname = request.getParameter("classname");
 
         System.out.println("unitname:" + unitname + " knotpoint:" + knowpoint + "summary:" + summary + "unitid" + unitid);
 
         Connection connection = SqlConnection.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into unit_study(unitname,knowpoint,summary,unitid) values (?,?,?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into unit_study(unitname,knowpoint,summary,unitid,classname) values (?,?,?,?,?)");
             preparedStatement.setString(1, unitname);
             preparedStatement.setString(2, knowpoint);
             preparedStatement.setString(3, summary);
             preparedStatement.setString(4,unitid);
+            preparedStatement.setString(5,classname);
             preparedStatement.executeUpdate();  //插入用executeUpdate（）
             writer.print("课程单元添加成功!");
             return;
@@ -68,11 +70,14 @@ public class unit_study_teaServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         // 允许跨域请求
         response.setHeader("Access-Control-Allow-Origin", "*");
+        String classname = request.getParameter("course_name");
+        System.out.println("从前端传过来的课程名字是classname:"+ classname);
 
         Connection connection = SqlConnection.getConnection();
         PrintWriter writer = response.getWriter();
         try {
-            PreparedStatement statement = connection.prepareStatement("select unitname,knowpoint,summary,unitid from unit_study");
+            PreparedStatement statement = connection.prepareStatement("select unitname,knowpoint,summary,unitid from unit_study where classname=?");
+            statement.setString(1, classname);
             ResultSet resultSet = statement.executeQuery();
             List<Unitstudy> unitstudyList = new LinkedList<>();
             while (resultSet.next()) {
