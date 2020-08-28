@@ -44,7 +44,8 @@ public class check_stu_fileServlet extends HttpServlet {
                 teafile.setFiletime(resultSet.getString("filetime"));
                 teafileList.add(teafile);
             }
-            writer.print(JSONObject.toJSONString(teafileList));  // 把对象转换成json字符串
+            // 把对象转换成json字符串
+            writer.print(JSONObject.toJSONString(teafileList));
         } catch (SQLException e) {
             e.printStackTrace();
         }
